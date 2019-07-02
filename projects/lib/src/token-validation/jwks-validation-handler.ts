@@ -33,12 +33,13 @@ const gracePeriodInSec = 600;
  * This jwks can be provided by the discovery document.
  */
 export class JwksValidationHandler extends AbstractValidationHandler {
+  encoder = new TextEncoder();
+  decoder = new TextDecoder();
 
   validateSignature(params: ValidationParams, retry = false): Promise<any> {
     const kid: string = params.idTokenHeader.kid;
     const keys: object[] = params.jwks.keys;
     let key: object;
-    const decoder = new TextDecoder();
 
     const alg = params.idTokenHeader.alg;
 
@@ -97,8 +98,8 @@ export class JwksValidationHandler extends AbstractValidationHandler {
       return Promise.reject(error);
     }
 
-    const data = this.str2ab(params.idToken.split('.')[1]);
-    const signature = this.str2ab(params.idToken.split('.')[2]);
+    const data = this.encoder.encode(params.idToken.split('.')[1]);
+    const signature = this.encoder.encode(params.idToken.split('.')[2]);
 
     cryptoSubtle.importKey(
       'jwk',
@@ -112,21 +113,24 @@ export class JwksValidationHandler extends AbstractValidationHandler {
       true,
       ['verify']
     ).then(cryptoKey => {
-      console.log(cryptoKey);
 
-      cryptoSubtle.verify(   {
-        name: 'RSA-PSS',
-        hash: {
-          name: 'SHA-256',
+      cryptoSubtle.verify(
+        {
+          name: 'RSA-PSS',
+          hash: {
+            name: 'SHA-256'
+          },
+          saltLength: 32
         },
-        saltLength: 32,
-      }, cryptoKey, signature, data).then(verified => {
+        cryptoKey,
+        signature,
+        data
+      ).then(verified => {
         console.log(verified);
       });
     });
 
     const keyObj = rs.KEYUTIL.getKey(key);
-    console.log('keyObj', keyObj);
 
     const validationOptions = {
       alg: allowedAlgorithms,
@@ -149,17 +153,18 @@ export class JwksValidationHandler extends AbstractValidationHandler {
   calcHash(valueToHash: string, algorithm: string): Promise<string> {
     const hashAlg = new rs.KJUR.crypto.MessageDigest({ alg: algorithm });
     const result = hashAlg.digestString(valueToHash);
-    const result2 = this.str2ab(valueToHash);
+    const toBeDigested = this.encoder.encode(valueToHash);
 
-    console.log(valueToHash);
 
-    cryptoSubtle.digest(algorithm, result2).then(digested => {
-      console.log('digested', digested);
+    cryptoSubtle.digest(algorithm, toBeDigested).then(digested => {
+      console.log('digested', this.decoder.decode(digested));
     });
 
-    console.log('result hashAlg', result);
+    console.log('result', result);
 
     const byteArrayAsString = this.toByteArrayAsString(result);
+
+    console.log('byteArrayAsString', byteArrayAsString);
 
     return Promise.resolve(byteArrayAsString);
   }
@@ -185,16 +190,4 @@ export class JwksValidationHandler extends AbstractValidationHandler {
     }
   }
 
-  ab2str(buf) {
-    return String.fromCharCode.apply(null, new Uint16Array(buf));
-  }
-
-  str2ab(str) {
-    const buf = new ArrayBuffer(str.length * 2); // 2 bytes for each char
-    const bufView = new Uint16Array(buf);
-    for (let i = 0, strLen = str.length; i < strLen; i++) {
-      bufView[i] = str.charCodeAt(i);
-    }
-    return buf;
-  }
 }
