@@ -1,4 +1,4 @@
-import { AuthConfig } from 'angular-oauth2-oidc';
+import { AuthConfig } from '../../../lib/src/auth.config';
 
 export const noDiscoveryAuthConfig: AuthConfig = {
   clientId:

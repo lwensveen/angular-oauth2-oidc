@@ -1,7 +1,7 @@
 import { Component } from '@angular/core';
-import { OAuthService } from 'angular-oauth2-oidc';
 import { Flight } from '../../entities/flight';
 import { FlightService } from '../services/flight.service';
+import { OAuthService } from '../../../../../lib/src/oauth-service';
 
 @Component({
   selector: 'app-flight-search',

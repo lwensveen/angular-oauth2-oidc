@@ -38,7 +38,7 @@ export class UrlHelperService {
 
     pairs = queryString.split('&');
 
-    for (const i of pairs.length) {
+    for (let i = 0; i < pairs.length; i++) {
       pair = pairs[i];
       separatorIndex = pair.indexOf('=');
 

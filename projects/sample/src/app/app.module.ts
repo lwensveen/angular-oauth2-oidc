@@ -2,7 +2,6 @@ import { NgModule } from '@angular/core';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { HttpClientModule } from '@angular/common/http';
 import { BrowserModule } from '@angular/platform-browser';
-import { OAuthModule } from 'angular-oauth2-oidc';
 
 import { AppComponent } from './app.component';
 import { AppRouterModule } from './app.routes';
@@ -11,6 +10,7 @@ import { FlightHistoryComponent } from './flight-history/flight-history.componen
 import { HomeComponent } from './home/home.component';
 import { PasswordFlowLoginComponent } from './password-flow-login/password-flow-login.component';
 import { SharedModule } from './shared/shared.module';
+import { OAuthModule } from '../../../lib/src/angular-oauth-oidic.module';
 
 @NgModule({
   imports: [

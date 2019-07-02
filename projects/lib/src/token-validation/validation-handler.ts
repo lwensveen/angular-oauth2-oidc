@@ -42,7 +42,13 @@ export abstract class AbstractValidationHandler implements ValidationHandler {
   async validateAtHash(params: ValidationParams): Promise<boolean> {
     const hashAlg = this.inferHashAlgorithm(params.idTokenHeader);
 
+    console.log('params.accessToken', params.accessToken);
+    console.log('hashAlg', hashAlg);
+
     const tokenHash = await this.calcHash(params.accessToken, hashAlg); // sha256(accessToken, { asString: true });
+
+    console.log('tokenHash', tokenHash);
+
 
     const leftMostHalf = tokenHash.substr(0, tokenHash.length / 2);
 

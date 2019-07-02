@@ -1,6 +1,7 @@
 // This api will come in the next version
 
-import { AuthConfig } from 'angular-oauth2-oidc';
+
+import { AuthConfig } from '../../../lib/src/auth.config';
 
 export const authPasswordFlowConfig: AuthConfig = {
   // Url of the Identity Provider

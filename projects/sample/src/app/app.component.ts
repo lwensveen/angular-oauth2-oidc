@@ -1,10 +1,11 @@
 import { noDiscoveryAuthConfig } from './auth-no-discovery.config';
 import { authConfig } from './auth.config';
 import { Component } from '@angular/core';
-import { JwksValidationHandler, NullValidationHandler, OAuthService } from 'angular-oauth2-oidc';
-// import { JwksValidationHandler } from 'angular-oauth2-oidc';
 import { Router } from '@angular/router';
 import { filter } from 'rxjs/operators';
+import { OAuthService } from '../../../lib/src/oauth-service';
+import { NullValidationHandler } from '../../../lib/src/token-validation/null-validation-handler';
+import { JwksValidationHandler } from '../../../lib/src/token-validation/jwks-validation-handler';
 
 @Component({
   // tslint:disable-next-line:component-selector
